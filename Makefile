@@ -1,9 +1,12 @@
-CXXFLAGS = -Wall -Iinclude
+CFLAGS = -Wall -std=c99 -Iinclude
 LDFLAGS = -Llib
-LDLIBS = -lstdc++ -lm -lGL -lGLEW -lglfw
+LDLIBS = -lm -lGL -lGLEW -lglfw
 
 TARGET = main
 
 $(TARGET) : main.o
 
-main.o : main.cc
+.PHONY : clean
+
+clean :
+	rm -f *.o *~ core
