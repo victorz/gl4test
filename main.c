@@ -1,15 +1,18 @@
 #include <stdlib.h>
 #include <math.h>
 #include <stdio.h>
+/* TODO: try to eliminate the need for glew. */
 #include <GL/glew.h>
 #include <GL/glfw.h>
 
-GLenum init_window();
+GLenum init_window(int w, int h);
 void gl_errors(size_t line);
 void setup_projection();
 
 int main()
 {
+	int window_width = 500;
+	int window_height = 500;
 	// Sphere radius properties.
 	int resolution = 20;
 	float radius = 0.5f;
@@ -17,7 +20,7 @@ int main()
 	GLfloat cap[1 + resolution][3];
 	float sector_delta = 2 * M_PI / resolution;
 
-	if (init_window() != GL_TRUE) {
+	if (init_window(window_width, window_height) != GL_TRUE) {
 		return 1;
 	}
 
@@ -76,7 +79,7 @@ void setup_projection()
 {
 }
 
-GLenum init_window()
+GLenum init_window(int w, int h)
 {
 	int major, minor, rev;
 	GLenum glewResult;
@@ -92,7 +95,7 @@ GLenum init_window()
 	glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 3);
 	glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwOpenWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	if (!glfwOpenWindow(1280, 720, 0,0,0,0, 32,0, GLFW_WINDOW)) {
+	if (!glfwOpenWindow(w, h, 0,0,0,0, 32,0, GLFW_WINDOW)) {
 		fprintf(stderr, "Could not open window\n");
 		glfwTerminate();
 		return GL_FALSE;
