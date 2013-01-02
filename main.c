@@ -108,29 +108,27 @@ int main()
 void gen_sphere(GLfloat r, GLuint lat_res, GLuint lng_res, vao_t *vao)
 {
 	size_t n_verts = 2 + lng_res * lat_res;
-	GLfloat *verts;
-	int vertex_index;
 
 	GLfloat lat_delta = PI / (lat_res + 1);
 	GLfloat lng_delta = 2 * PI / lng_res;
 
 	/* GENERATE VERTICES */
-	verts = calloc(n_verts * 3, sizeof(GLfloat));
+	GLfloat *vertices = calloc(n_verts * 3, sizeof(GLfloat));
 
 	/* Poles */
-	verts[1] = r;
-	verts[(n_verts-1)*3 + 1] = -r;
+	vertices[1] = r;
+	vertices[(n_verts-1)*3 + 1] = -r;
 
 	/* Latitudinal lines */
-	vertex_index = 1;
-	for (int lat = 0; lat < lat_res; lat++) {
+	int vert_ind = 1;
+	for (int lat = 1; lat <= lat_res; lat++) {
 		for (int lng = 0; lng < lng_res; lng++) {
-			verts[vertex_index*3] = r * sinf((lat + 1) * lat_delta) * cosf(lng * lng_delta);
-			verts[vertex_index*3 + 1] = r * cosf((lat + 1) * lat_delta);
-			verts[vertex_index*3 + 2] = r * sinf((lat + 1) * lat_delta) * sinf(lng * lng_delta);
-			fprintf(stderr, "verts[%3d]: (% f, % f, % f)\n", vertex_index,
-			        verts[vertex_index*3], verts[vertex_index*3 + 1], verts[vertex_index*3 + 2]);
-			vertex_index++;
+			vertices[vert_ind*3] = r * sinf(lat * lat_delta) * cosf(lng * lng_delta);
+			vertices[vert_ind*3 + 1] = r * cosf(lat * lat_delta);
+			vertices[vert_ind*3 + 2] = r * sinf(lat * lat_delta) * sinf(lng * lng_delta);
+			/* fprintf(stderr, "verts[%3d]: (% f, % f, % f)\n", vert_ind, */
+			/*         vertices[vert_ind*3], vertices[vert_ind*3 + 1], vertices[vert_ind*3 + 2]); */
+			vert_ind++;
 		}
 	}
 
@@ -144,10 +142,10 @@ void gen_sphere(GLfloat r, GLuint lat_res, GLuint lng_res, vao_t *vao)
 	/* Upload data to GPU. */
 	glGenBuffers(1, &vao->vertices);
 	glBindBuffer(GL_ARRAY_BUFFER, vao->vertices);
-	glBufferData(GL_ARRAY_BUFFER, n_verts * 3 * sizeof(GLfloat), verts, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, n_verts * 3 * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
 
 	/* Clean up. */
-	free(verts);
+	free(vertices);
 }
 
 void setup_projection()
