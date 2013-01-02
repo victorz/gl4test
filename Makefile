@@ -4,7 +4,7 @@ LDLIBS = -lm -lGL -lGLEW -lglfw
 
 TARGET = main
 
-$(TARGET) : main.o
+$(TARGET) : main.o shader.o
 
 .PHONY : clean
 

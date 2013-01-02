@@ -5,6 +5,8 @@
 #include <GL/glew.h>
 #include <GL/glfw.h>
 
+#include "shader.h"
+
 static const double PI = 3.14159265358979323846;
 
 typedef struct {
