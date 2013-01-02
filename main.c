@@ -5,6 +5,8 @@
 #include <GL/glew.h>
 #include <GL/glfw.h>
 
+static const double PI = 3.14159265358979323846;
+
 GLenum init_window(int w, int h);
 void gl_errors(size_t line);
 void setup_projection();
@@ -18,7 +20,7 @@ int main()
 	float radius = 0.5f;
 
 	GLfloat cap[1 + resolution][3];
-	float sector_delta = 2 * M_PI / resolution;
+	float sector_delta = 2 * PI / resolution;
 
 	if (init_window(window_width, window_height) != GL_TRUE) {
 		return 1;
