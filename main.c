@@ -37,6 +37,7 @@ int main()
 	/* Sphere properties. */
 	GLuint lat_res = 7;
 	GLuint lng_res = 16;
+	GLuint n_verts = 2 + lat_res * lng_res;
 	GLfloat radius = 0.9f;
 	vao_t sphere;
 	gen_sphere(radius, lat_res, lng_res, &sphere);
@@ -77,6 +78,7 @@ int main()
 
 		// Draw calls
 		glDrawArrays(GL_TRIANGLE_FAN, 0, 1 + lng_res);
+		glDrawArrays(GL_POINTS, 1 + lng_res, n_verts - (1 + lng_res));
 		gl_errors(__LINE__);
 
 		// Event handling
