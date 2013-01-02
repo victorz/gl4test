@@ -41,13 +41,33 @@ int main()
 	vao_t sphere;
 	gen_sphere(radius, lat_res, lng_res, &sphere);
 
+	/* OpenGL objects. */
+	GLuint shaders[2];
+	GLuint program;
+	shaders[0] = load_shader("shaders/basic.vert", GL_VERTEX_SHADER);
+	shaders[1] = load_shader("shaders/basic.frag", GL_FRAGMENT_SHADER);
+	if (!shaders[0] || !shaders[1]) {
+		fprintf(stderr, "could not compile shader(s)!\n");
+		glfwTerminate();
+		return 1;
+	}
+	program = link_program(shaders, 2);
+	if (!program) {
+		fprintf(stderr, "could not link program!\n");
+		glfwTerminate();
+		return 1;
+	}
+	glUseProgram(program);
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	/* Has no effect? */
 	/* glLineWidth(3.0f); */
 
+	GLuint in_pos = glGetAttribLocation(program, "in_pos");
 	glBindVertexArray(sphere.vao);
 	glBindBuffer(GL_ARRAY_BUFFER, sphere.vertices);
+	glEnableVertexAttribArray(in_pos);
+	glVertexAttribPointer(in_pos, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
 	// Main program loop.
 	glClearColor(0.1f, 0.0f, 0.5f, 1.0f);
