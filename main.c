@@ -24,55 +24,37 @@ int main()
 {
 	int window_width = 500;
 	int window_height = 500;
-	// Sphere radius properties.
-	int resolution = 20;
-	float radius = 0.5f;
-
-	GLfloat cap[1 + resolution][3];
-	float sector_delta = 2 * PI / resolution;
 
 	if (init_window(window_width, window_height) != GL_TRUE) {
 		return 1;
 	}
 
-	// Generate north polar cap mesh. Can be rotated to provide the
-	// south cap.
-	cap[0][0] = 0.0f;
-	cap[0][1] = 1.0f;
-	cap[0][2] = 0.0f;
-	for (int i = 1; i <= resolution; i++) {
-		cap[i][0] = radius * cosf(i * sector_delta);
-		cap[i][1] = radius * cosf(sector_delta);
-		cap[i][2] = radius * sinf(i * sector_delta);
-	}
-
-	GLuint vert_array;
-	glGenVertexArrays(1, &vert_array);
-	glBindVertexArray(vert_array);
-
-	GLuint cap_vert_buf;
-	glGenBuffers(1, &cap_vert_buf);
-	glBindBuffer(GL_ARRAY_BUFFER, cap_vert_buf);
-	glBufferData(GL_ARRAY_BUFFER, (1 + resolution) * 3 * sizeof(GLfloat), cap, GL_STATIC_DRAW);
-
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	gl_errors(__LINE__);
-
 	setup_projection();
 	gl_errors(__LINE__);
+
+	/* Sphere properties. */
+	GLuint lat_res = 7;
+	GLuint lng_res = 16;
+	GLfloat radius = 0.9f;
+	vao_t sphere;
+	gen_sphere(radius, lat_res, lng_res, &sphere);
+
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	/* Has no effect? */
+	/* glLineWidth(3.0f); */
+
+	glBindVertexArray(sphere.vao);
+	glBindBuffer(GL_ARRAY_BUFFER, sphere.vertices);
 
 	// Main program loop.
 	glClearColor(0.1f, 0.0f, 0.5f, 1.0f);
 	do {
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// glfwWaitEvents();
 
 		// Draw calls
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-		gl_errors(__LINE__);
-		glDrawArrays(GL_TRIANGLE_FAN, 0, 1 + resolution);
-		glDisableVertexAttribArray(0);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 1 + lng_res);
 		gl_errors(__LINE__);
 
 		// Event handling
@@ -80,6 +62,9 @@ int main()
 		glfwSwapBuffers();
 		glfwSleep(0.016);
 	} while (glfwGetKey('Q') != GLFW_PRESS && glfwGetWindowParam(GLFW_OPENED) == GL_TRUE);
+
+	glDeleteBuffers(1, &sphere.vertices);
+	glDeleteVertexArrays(1, &sphere.vao);
 
 	glfwTerminate();
 
