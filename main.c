@@ -2,6 +2,8 @@
 #include <math.h>
 #include <stdio.h>
 /* TODO: try to eliminate the need for glew. */
+#define GLFW_NO_GLU
+#define GLEW_NO_GLU
 #include <GL/glew.h>
 #include <GL/glfw.h>
 

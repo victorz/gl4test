@@ -5,8 +5,8 @@
 #include <unistd.h>
 #include <stdlib.h>
 /* TODO: Try not to depend on glew. */
+#define GLEW_NO_GLU
 #include <GL/glew.h>
-#include <GL/gl.h>
 
 /* Returns a non-zero shader ID for a compiled shader. Returns 0 on
  * error.
